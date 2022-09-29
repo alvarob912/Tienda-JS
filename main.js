@@ -88,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     renderizarProductos();
     renderizarCarrito();
+    calcularTotal();
 
 });
 
