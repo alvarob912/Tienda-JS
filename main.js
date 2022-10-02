@@ -44,6 +44,22 @@ document.addEventListener('DOMContentLoaded', () => {
             tienda.appendChild(producto);
 
             producto.querySelector('button').addEventListener('click', ()=>{
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                })
+                
+                Toast.fire({
+                    icon: 'success',
+                    title: `${nombre} se añadio al carrito`
+                })
                 
                 agregarAlCarrito(id);
             })
@@ -102,7 +118,40 @@ const renderizarCarrito = () => {
 
         producto.querySelector('button').addEventListener('click', ()=>{
             //eliminar prod del carrito
-            EliminarCarrito(index);
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+            
+            swalWithBootstrapButtons.fire({
+                title: `Quieres eliminar ${nombre}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Eliminar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                EliminarCarrito(index);
+                swalWithBootstrapButtons.fire(
+                    'Eliminado!',
+                    `${nombre} fue eliminado del carrito`,
+                    'success'
+                    )
+                } else if (
+                  /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                    'Cancelado',
+                    `${nombre} sigue en el carrito`,
+                    'error'
+                )
+                }
+            })
 
         })
 
