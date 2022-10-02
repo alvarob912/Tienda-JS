@@ -1,8 +1,16 @@
 import { stock } from "./stock.js";
+import { guardarCarritoStorage, eliminarCarritoStorage, obtenerCarritoStorage } from "./storage.js"
 
-let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    renderizarProductos();
+    obtenerCarritoStorage(carrito);
+    renderizarCarrito();
+    calcularTotal();
+});
+
+    let carrito = [];
 
     const renderizarProductos = () => {
         
@@ -10,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tienda = document.getElementById('tienda');
         
         //recorro los objetos
-        stock.forEach((p)=>{
+        stock.forEach(({img, nombre, precio, id})=>{
 
             //creo un div por cada objeto
             let producto = document.createElement('div');
@@ -24,11 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             producto.innerHTML = `
             <div class="card border-dark text-dark bg-light" style="width: 18rem;">
-            <img class="card-img-top" src="${p.img}" alt="Card image cap">
+            <img class="card-img-top" src="${img}" alt="Card image cap">
             <div class="card-body">
-                <h5 class="card-title">${p.nombre}</h5>
-                <p>$${p.precio}</p>
-                <button class="btn btn-dark btn btn-outline-light" id="${p.id}">Añadir al carrito</button>
+                <h5 class="card-title">${nombre}</h5>
+                <p>$${precio}</p>
+                <button class="btn btn-dark btn btn-outline-light" id="${id}">Añadir al carrito</button>
             </div>
         </div>`
 
@@ -37,17 +45,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             producto.querySelector('button').addEventListener('click', ()=>{
                 
-                agregarAlCarrito(p.id);
+                agregarAlCarrito(id);
             })
         })
         
     }
     
-    renderizarProductos();
-    renderizarCarrito();
-    calcularTotal();
 
-});
+    renderizarProductos();
 
 const agregarAlCarrito = (id) =>{
     
@@ -65,9 +70,9 @@ const agregarAlCarrito = (id) =>{
 
         carrito.push(producto);
     }
-    localStorage.setItem('carrito', JSON.stringify(carrito));
     renderizarCarrito();
     calcularTotal();
+    guardarCarritoStorage(carrito);
 
 }
 
@@ -77,7 +82,7 @@ const renderizarCarrito = () => {
 
     carritoHTML.innerHTML= '';
     
-    carrito.forEach((p, index) => {
+    carrito.forEach(({img, nombre, precio, cantidad}, index) => {
 
         let producto = document.createElement('div');
         producto.classList.add('col-12');
@@ -89,11 +94,11 @@ const renderizarCarrito = () => {
         producto.innerHTML = `
         
         <div class="card text-dark" style="width: 18rem;">
-            <img class="card-img-top" src="${p.img}" alt="Card image cap">
+            <img class="card-img-top" src="${img}" alt="Card image cap">
             <div class="card-body">
-                <h5 class="card-title">${p.nombre}</h5>
-                <p>$${p.precio}</p>
-                <p>Cantidad: ${p.cantidad}</p>
+                <h5 class="card-title">${nombre}</h5>
+                <p>$${precio}</p>
+                <p>Cantidad: ${cantidad}</p>
                 <button class="btn btn-danger">Eliminar</button>
             </div>
         </div>`
@@ -112,12 +117,9 @@ const EliminarCarrito = (indice) =>{
 
     carrito[indice].cantidad--;
 
-    if(carrito[indice].cantidad === 0){
-        //elimina la card cuando llegue a 0
-        carrito.splice(indice,1);
-    }
+    (carrito[indice].cantidad === 0) && carrito.splice(indice,1);
 
-    localStorage.setItem('carrito', JSON.stringify(carrito));
+    eliminarCarritoStorage(carrito);
     renderizarCarrito();
     calcularTotal();
 }
@@ -127,8 +129,8 @@ const calcularTotal = () =>{
 
     let total = 0;
 
-    carrito.forEach((p)=>{
-        total += p.precio*p.cantidad;
+    carrito.forEach(({precio, cantidad})=>{
+        total += precio*cantidad;
     })
 
     const t= document.getElementById('total');
