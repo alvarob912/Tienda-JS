@@ -51,9 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
     }
     
-
-    renderizarProductos();
-
 const agregarAlCarrito = (id) =>{
     
     let producto = stock.find(producto => producto.id === id);
