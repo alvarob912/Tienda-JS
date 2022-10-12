@@ -1,10 +1,13 @@
-import { stock } from "./stock.js";
-import { guardarCarritoStorage, eliminarCarritoStorage, obtenerCarritoStorage } from "./storage.js"
+import { homeController } from "./homeController.js";
+// import { stock } from "./stock.js";
+import { guardarCarritoStorage, eliminarCarritoStorage, obtenerCarritoStorage } from "./storage.js";
 
 
-document.addEventListener('DOMContentLoaded', () => {
 
-    renderizarProductos();
+document.addEventListener('DOMContentLoaded', async () => {
+
+    const stock = await homeController();
+    renderizarProductos(stock);
     obtenerCarritoStorage(carrito);
     renderizarCarrito();
     calcularTotal();
@@ -12,11 +15,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let carrito = [];
 
-    const renderizarProductos = () => {
-        
+    const renderizarProductos = (stock) => {
         //capturo el div
         const tienda = document.getElementById('tienda');
         
+        tienda.innerHTML = '';
         //recorro los objetos
         stock.forEach(({img, nombre, precio, id})=>{
 
@@ -61,13 +64,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     title: `${nombre} se añadio al carrito`
                 })
                 
-                agregarAlCarrito(id);
+                agregarAlCarrito(id,stock);
             })
         })
         
     }
     
-const agregarAlCarrito = (id) =>{
+const agregarAlCarrito = (id,stock) =>{
     
     let producto = stock.find(producto => producto.id === id);
 
@@ -183,3 +186,4 @@ const calcularTotal = () =>{
     t.innerHTML = `<h5>$${total}</h5>`;
 }
 
+export { renderizarProductos };
