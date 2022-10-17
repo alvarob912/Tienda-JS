@@ -1,7 +1,7 @@
 {
   "name": "alvarobijarra-tienda",
   "version": "1.0.0",
-  "description": "tienda",
+  "description": "",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/alvarob912/Tienda-js/issues"
   },
-  "homepage": "https://github.com/alvarob912/Tienda-js#readme"
+  "homepage": "https://github.com/alvarob912/Tienda-js#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.2",
+    "sweetalert2": "^11.5.2"
+  }
 }
